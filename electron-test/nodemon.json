@@ -1,0 +1,6 @@
+{
+    "ignore": [
+        "assests/"
+    ],
+    "ext": "js, json, html, htm"
+}
