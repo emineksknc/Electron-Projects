@@ -49,7 +49,7 @@ app.on('ready', () =>{
     if(data){
         let todo = {
             id: todoList.length + 1,
-            text: data
+            text: data.todoValue
 
         }
         todoList.push(todo)
@@ -57,8 +57,11 @@ app.on('ready', () =>{
         //addWindow'dan aldığımız TODO'yu mainWindow'a gönder...
         mainWindow.webContents.send("todo:addItem", todo);
 
-        addWindow.close();
-        addWindow = null;
+        if (data.ref == "new"){
+            addWindow.close();
+            addWindow = null;
+        }
+ 
     }
 
 

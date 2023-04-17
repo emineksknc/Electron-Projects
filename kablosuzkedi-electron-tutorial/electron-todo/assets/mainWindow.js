@@ -3,6 +3,14 @@ const { ipcRenderer } = electron;
 
 checkTodoCount();
 
+const todoValue = document.querySelector("#todoValue");
+
+document.querySelector("#addBtn").addEventListener("click", () => {
+    ipcRenderer.send("newTodo:save", {ref: "main", todoValue:  todoValue.value});
+    todoValue.value ="";
+
+})
+
 ipcRenderer.on("todo:addItem", (e, todo) => {
    
 
@@ -35,10 +43,14 @@ deleteBtn.style = "box-shadow: 0px 3px 0px;";
 deleteBtn.innerText = "X";
 
 
-deleteBtn.addEventListener("click", () => {
+deleteBtn.addEventListener("click", (e) => {
     if(confirm("Kaydı Silmek İstediğinize Emin misiniz?")){
 
         //TODO
+        e.target.parentNode.parentNode.remove();
+        checkTodoCount();
+
+
     }
 })
 

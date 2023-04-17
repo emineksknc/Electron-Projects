@@ -35,7 +35,7 @@
         })
 
         saveBtn.addEventListener("click", () => {
-            ipcRenderer.send("newTodo:save", todoValue.value);
+            ipcRenderer.send("newTodo:save",  {ref: "new", todoValue:  todoValue.value});
 
         })
     </script>
