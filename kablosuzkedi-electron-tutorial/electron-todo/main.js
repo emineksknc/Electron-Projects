@@ -36,6 +36,13 @@ app.on('ready', () =>{
     app.quit();
    })
 
+   ipcMain.on("todo:close", () => {
+    app.quit();
+    addWindow = null;
+
+
+})
+
    // NewTODO Penceresi Eventleri...
 
    ipcMain.on("newTodo:close", () => {

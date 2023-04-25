@@ -9,16 +9,21 @@
     <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
-    <div class="container main-container pt-5">
-        <h3 class="text-center">Electron.js ile ToDo App </h3>
-        <div class="row">
-            <div class="col-md-6 offset-3 mt-5 d-flex">
-                <input type="text" class="form-control form-control-lg mr-1" id="todoValue">
-                <button class="btn btn-outline-dark" id="addBtn">Ekle</button>
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand text-white"> ToDO List | kablosuzkedi </a>
+        
+        <div class="col-md-6 d-flex">
+            
+            <input type="text" class="form-control mr-1" id="todoValue">
+            <button class="btn btn-success ml-3" id="addBtn">Ekle</button>
+            <button class="btn btn-danger ml-3" id="closeBtn">Çıkış</button>
 
-            </div>
         </div>
-        <h3 class="text-center mt-5 mb-3">Yapılacaklar Listesi</h3>
+    </nav>
+
+
+    <div class="container main-container pt-5">
+
         <div class="todo-container container"></div>
 
         <div class="alert-container">
@@ -27,7 +32,10 @@
     
             </div>
         </div>
-
+        <nav class="navbar fixed-bottom navbar-light bg-light">
+            <span>Toplam Kayıt Sayısı: <b class="total-count-container"></b></span>
+           
+          </nav>
       
         <script src="../assets/mainWindow.js"></script>
 
