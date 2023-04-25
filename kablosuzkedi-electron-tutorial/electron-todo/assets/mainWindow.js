@@ -4,6 +4,13 @@ const { ipcRenderer } = electron;
 checkTodoCount();
 
 const todoValue = document.querySelector("#todoValue");
+todoValue.addEventListener("keypress", (e) =>{
+    if(e.keyCode == 13){
+        ipcRenderer.send("newTodo:save", {ref: "main", todoValue:  e.target.value});
+        e.target.value ="";
+    }
+    console.log(e);
+})
 
 document.querySelector("#addBtn").addEventListener("click", () => {
     ipcRenderer.send("newTodo:save", {ref: "main", todoValue:  todoValue.value});
