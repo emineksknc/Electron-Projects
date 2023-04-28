@@ -1,4 +1,5 @@
 const electron = require("electron");
+const { dialog } = require('electron')
 const url = require("url");
 const path = require("path");
 
@@ -11,9 +12,12 @@ const {app, BrowserWindow, Menu, ipcMain,webContents} = electron;
 
 let mainWindow, addWindow;
 
+let todoList = [];
 
 app.on('ready', () =>{
     mainWindow = new BrowserWindow({
+    frame:false,
+    autoHideMenuBar: false,
      webPreferences: {
          nodeIntegration: true,
          contextIsolation: false,
@@ -33,8 +37,8 @@ app.on('ready', () =>{
 
 
     // Menünün Oluşturulması...
-    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-    Menu.setApplicationMenu(mainMenu);
+    // const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+    // Menu.setApplicationMenu(mainMenu);
 
    mainWindow.on('close', () => {
     app.quit();
@@ -58,17 +62,15 @@ app.on('ready', () =>{
 
    ipcMain.on("newTodo:save", (err, data) => {
     if(data){
-       
-        db.query("INSERT INTO todos SET text = ? " , data.todoValue, (e, r, f) => {
-            if(r.insertId > 0){ 
-                mainWindow.webContents.send("todo:addItem", {
-                    id: r.insertId,
-                    text: data.todoValue
-                })}
-        })
+        let todo = {
+            id: todoList.length + 1,
+            text: data.todoValue
+
+        }
+        todoList.push(todo)
 
         //addWindow'dan aldığımız TODO'yu mainWindow'a gönder...
-        //mainWindow.webContents.send("todo:addItem", todo);
+        mainWindow.webContents.send("todo:addItem", todo);
 
         if (data.ref == "new"){
             addWindow.close();
@@ -89,9 +91,21 @@ app.on('ready', () =>{
 
     ipcMain.on("remove:todo", (e, id) =>{
         db.query("DELETE FROM todos WHERE id = ?", id, (e, r, f ) =>{
-            console.log(r);
+        
             if(r.affectedRows > 0) {
-                console.log("Silme işlemi başarılı!")
+                const options = {
+                    title: 'TO DO Silindi',
+                    buttons: ['Dismiss'],
+                    type: 'warning',
+                    message: 'Silme işlemi başarılı!',
+                  };
+                
+                  dialog.showMessageBox('Silme işlemi başarılı!', options => {
+                    
+                  });
+
+        
+             
             }
         })
 
@@ -158,7 +172,7 @@ function createWindow(){
         height:175,
         title: "Yeni Bir Pencere",
         frame:false,
-        autoHideMenuBar:false,
+        autoHideMenuBar: false,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -180,3 +194,8 @@ function createWindow(){
 
 }
 
+
+
+function getTodoList(){
+    console.log(todoList);
+}

@@ -18,7 +18,7 @@ todoValue.addEventListener("keypress", (e) =>{
         ipcRenderer.send("newTodo:save", {ref: "main", todoValue:  e.target.value});
         e.target.value ="";
     }
-    console.log(e);
+
 })
 
 document.querySelector("#addBtn").addEventListener("click", () => {
