@@ -1,6 +1,12 @@
 const electron = require("electron");
+const { dialog } = require('electron')
 const url = require("url");
 const path = require("path");
+
+
+const db = require("./lib/connection").db;
+
+
 
 const {app, BrowserWindow, Menu, ipcMain,webContents} = electron;
 
@@ -10,6 +16,8 @@ let todoList = [];
 
 app.on('ready', () =>{
     mainWindow = new BrowserWindow({
+    frame:false,
+    autoHideMenuBar: false,
      webPreferences: {
          nodeIntegration: true,
          contextIsolation: false,
@@ -29,8 +37,8 @@ app.on('ready', () =>{
 
 
     // Menünün Oluşturulması...
-    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-    Menu.setApplicationMenu(mainMenu);
+    // const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+    // Menu.setApplicationMenu(mainMenu);
 
    mainWindow.on('close', () => {
     app.quit();
@@ -72,9 +80,38 @@ app.on('ready', () =>{
     }
 
 
-})
+});
 
-})
+    mainWindow.webContents.once("dom-ready", () => {
+        db.query("SELECT * FROM todos", (error, results, fields) => {
+            mainWindow.webContents.send("initApp", results);
+        })
+    })
+
+
+    ipcMain.on("remove:todo", (e, id) =>{
+        db.query("DELETE FROM todos WHERE id = ?", id, (e, r, f ) =>{
+        
+            if(r.affectedRows > 0) {
+                const options = {
+                    title: 'TO DO Silindi',
+                    buttons: ['Dismiss'],
+                    type: 'warning',
+                    message: 'Silme işlemi başarılı!',
+                  };
+                
+                  dialog.showMessageBox('Silme işlemi başarılı!', options => {
+                    
+                  });
+
+        
+             
+            }
+        })
+
+    })
+
+});
 
 // Menü Template Yapısı
 const mainMenuTemplate = [
@@ -135,7 +172,7 @@ function createWindow(){
         height:175,
         title: "Yeni Bir Pencere",
         frame:false,
-        autoHideMenuBar:false,
+        autoHideMenuBar: false,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,

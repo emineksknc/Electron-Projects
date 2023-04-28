@@ -4,12 +4,21 @@ const { ipcRenderer } = electron;
 checkTodoCount();
 
 const todoValue = document.querySelector("#todoValue");
+
+ipcRenderer.on("initApp", (e, todos) => {
+    todos.forEach(todo => {
+        drawRow(todo);
+    });
+
+})
+
+
 todoValue.addEventListener("keypress", (e) =>{
     if(e.keyCode == 13){
         ipcRenderer.send("newTodo:save", {ref: "main", todoValue:  e.target.value});
         e.target.value ="";
     }
-    console.log(e);
+
 })
 
 document.querySelector("#addBtn").addEventListener("click", () => {
@@ -28,8 +37,12 @@ document.querySelector("#closeBtn").addEventListener("click", () => {
 })
 
 ipcRenderer.on("todo:addItem", (e, todo) => {
-   
+    drawRow(todo)
 
+
+})
+
+function drawRow(todo){
 
 // container...
 const container = document.querySelector(".todo-container");
@@ -56,13 +69,14 @@ const deleteBtn = document.createElement("button");
 deleteBtn.className = "btn btn-sm btn-outline-danger flex-shrink-1";
 deleteBtn.style = "box-shadow: 0px 3px 0px;";
 deleteBtn.innerText = "X";
-
+deleteBtn.setAttribute("data-id", todo.id)
 
 deleteBtn.addEventListener("click", (e) => {
     if(confirm("Kaydı Silmek İstediğinize Emin misiniz?")){
 
         //TODO
         e.target.parentNode.parentNode.remove();
+        ipcRenderer.send("remove:todo",e.target.getAttribute("data-id"));
         checkTodoCount();
 
 
@@ -77,9 +91,7 @@ row.appendChild(col);
 container.appendChild(row);
 checkTodoCount();
 
-
-})
-
+}
 
 
 function checkTodoCount(){
