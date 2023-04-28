@@ -11,7 +11,6 @@ const {app, BrowserWindow, Menu, ipcMain,webContents} = electron;
 
 let mainWindow, addWindow;
 
-let todoList = [];
 
 app.on('ready', () =>{
     mainWindow = new BrowserWindow({
@@ -59,15 +58,17 @@ app.on('ready', () =>{
 
    ipcMain.on("newTodo:save", (err, data) => {
     if(data){
-        let todo = {
-            id: todoList.length + 1,
-            text: data.todoValue
-
-        }
-        todoList.push(todo)
+       
+        db.query("INSERT INTO todos SET text = ? " , data.todoValue, (e, r, f) => {
+            if(r.insertId > 0){ 
+                mainWindow.webContents.send("todo:addItem", {
+                    id: r.insertId,
+                    text: data.todoValue
+                })}
+        })
 
         //addWindow'dan aldığımız TODO'yu mainWindow'a gönder...
-        mainWindow.webContents.send("todo:addItem", todo);
+        //mainWindow.webContents.send("todo:addItem", todo);
 
         if (data.ref == "new"){
             addWindow.close();
@@ -179,8 +180,3 @@ function createWindow(){
 
 }
 
-
-
-function getTodoList(){
-    console.log(todoList);
-}
