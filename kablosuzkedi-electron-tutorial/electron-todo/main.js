@@ -85,6 +85,17 @@ app.on('ready', () =>{
         })
     })
 
+
+    ipcMain.on("remove:todo", (e, id) =>{
+        db.query("DELETE FROM todos WHERE id = ?", id, (e, r, f ) =>{
+            console.log(r);
+            if(r.affectedRows > 0) {
+                console.log("Silme işlemi başarılı!")
+            }
+        })
+
+    })
+
 });
 
 // Menü Template Yapısı

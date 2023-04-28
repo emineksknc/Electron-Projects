@@ -69,13 +69,14 @@ const deleteBtn = document.createElement("button");
 deleteBtn.className = "btn btn-sm btn-outline-danger flex-shrink-1";
 deleteBtn.style = "box-shadow: 0px 3px 0px;";
 deleteBtn.innerText = "X";
-
+deleteBtn.setAttribute("data-id", todo.id)
 
 deleteBtn.addEventListener("click", (e) => {
     if(confirm("Kaydı Silmek İstediğinize Emin misiniz?")){
 
         //TODO
         e.target.parentNode.parentNode.remove();
+        ipcRenderer.send("remove:todo",e.target.getAttribute("data-id"));
         checkTodoCount();
 
 
