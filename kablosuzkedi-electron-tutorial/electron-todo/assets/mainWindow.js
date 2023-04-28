@@ -4,6 +4,15 @@ const { ipcRenderer } = electron;
 checkTodoCount();
 
 const todoValue = document.querySelector("#todoValue");
+
+ipcRenderer.on("initApp", (e, todos) => {
+    todos.forEach(todo => {
+        drawRow(todo);
+    });
+
+})
+
+
 todoValue.addEventListener("keypress", (e) =>{
     if(e.keyCode == 13){
         ipcRenderer.send("newTodo:save", {ref: "main", todoValue:  e.target.value});
@@ -28,8 +37,12 @@ document.querySelector("#closeBtn").addEventListener("click", () => {
 })
 
 ipcRenderer.on("todo:addItem", (e, todo) => {
-   
+    drawRow(todo)
 
+
+})
+
+function drawRow(todo){
 
 // container...
 const container = document.querySelector(".todo-container");
@@ -77,9 +90,7 @@ row.appendChild(col);
 container.appendChild(row);
 checkTodoCount();
 
-
-})
-
+}
 
 
 function checkTodoCount(){

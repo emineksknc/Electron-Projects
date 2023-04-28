@@ -2,6 +2,11 @@ const electron = require("electron");
 const url = require("url");
 const path = require("path");
 
+
+const db = require("./lib/connection").db;
+
+
+
 const {app, BrowserWindow, Menu, ipcMain,webContents} = electron;
 
 let mainWindow, addWindow;
@@ -72,9 +77,15 @@ app.on('ready', () =>{
     }
 
 
-})
+});
 
-})
+    mainWindow.webContents.once("dom-ready", () => {
+        db.query("SELECT * FROM todos", (error, results, fields) => {
+            mainWindow.webContents.send("initApp", results);
+        })
+    })
+
+});
 
 // Menü Template Yapısı
 const mainMenuTemplate = [
